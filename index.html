@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Verification</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #98FF98;
+            font-family: 'Fredoka One', sans-serif;
+        }
+
+        .key-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .message {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="key-container">
+        <h2>Enter Key</h2>
+        <input type="text" id="keyInput" placeholder="Enter your key here">
+        <br><br>
+        <button onclick="submitKey()">Submit</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        function submitKey() {
+            const key = document.getElementById("keyInput").value;
+            fetch('http://192.168.254.142:5000/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ key: key })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById("message");
+                if (data.success) {
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = 'Key Verified! You are whitelisted.';
+                } else {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Invalid Key. Please try again.';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
